@@ -25,16 +25,14 @@
     $(function() {
         $.get('/buildbot/one_box_per_builder', function(data) {
             var boxes = $(data).find('.LastBuild.box');
-            var names = boxes.prev('td').children('a').map(function(){return $(this).text();}).toArray();
             var status = {};
             boxes.filter('.success').prev('td').children('a').map(function(){status[$(this).text()] = true;});
             boxes.filter('.failure').prev('td').children('a').map(function(){status[$(this).text()] = false;});
-            $.each(names, function(idx, name) {
-                var css_class = status[name] ? "success" : "failure";
-                $(document.getElementById(name)).addClass(css_class);
-                $(document.getElementById(name + '-status')).addClass(css_class).text(status[name] ? "PASS:" : "FAIL:");
-                $(document.getElementById(name + '-summary')).addClass(css_class);
-                $(document.getElementById(name + '-log')).addClass(css_class);
+            var status_text = {};
+            boxes.map(function(){status_text[$(this).prev('td').children('a').text()] = $(this).html().split('<br>').slice(1).join(' ');});
+            $.each(status, function(name, ok) {
+                $(document.getElementById(name)).addClass(ok ? "success" : "failure");
+                $(document.getElementById(name + '-status')).html(status_text[name] + ':<br>');
             });
         });
     });
