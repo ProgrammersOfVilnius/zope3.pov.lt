@@ -5,10 +5,20 @@
   <title>Zope 3 related odds and ends</title>
   <link rel="stylesheet" href="style.css" />
   <style type="text/css">
-    .success { color: green !important; }
-    .failure { color: red !important; }
-    .success:after { content: " (ok)"; }
-    .failure:after { content: " (FAIL)"; }
+    th, td { padding: 1ex; }
+    td.success {
+      background: #8FDF5F;
+      border: 1px solid #2F8F0F;
+      color: white;
+    }
+    td.failure {
+      background: #E98080;
+      border: 1px solid #8F0F0F;
+      color: white;
+    }
+    td a:link, td a:visited, td a:active, td a:hover {
+      color: #666;
+    };
   </style>
   <script type="text/javascript" src="jquery/jquery.min.js"></script>
   <script type="text/javascript">
@@ -20,8 +30,11 @@
             boxes.filter('.success').prev('td').children('a').map(function(){status[$(this).text()] = true;});
             boxes.filter('.failure').prev('td').children('a').map(function(){status[$(this).text()] = false;});
             $.each(names, function(idx, name) {
-                $(document.getElementById(name + '-summary')).addClass(status[name] ? "success" : "failure");
-                $(document.getElementById(name + '-log')).addClass(status[name] ? "success" : "failure");
+                var css_class = status[name] ? "success" : "failure";
+                $(document.getElementById(name)).addClass(css_class);
+                $(document.getElementById(name + '-status')).addClass(css_class).text(status[name] ? "PASS:" : "FAIL:");
+                $(document.getElementById(name + '-summary')).addClass(css_class);
+                $(document.getElementById(name + '-log')).addClass(css_class);
             });
         });
     });
@@ -33,58 +46,43 @@
   <p><a href="irclogs/">IRC logs</a></p>
   <p><a href="trac/">Source repository browser</a> (updated hourly)</p>
   <p><a href="buildbot/">Buildbot for the Zope 3.4 Known Good Set packages</a></p>
-  <blockquote>
-    <table cellspacing="10">
-      <tr>
-        <td colspan="2" align="center">
-          Last build summary
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <a id="py2.4-32bit-linux-summary"
-             href="http://zope3.pov.lt/buildbot/builders/py2.4-32bit-linux/builds/-1/steps/test/logs/summary">Python 2.4 on 32-bit Linux</a>
-        </td>
-        <td>
-          <a id="py2.4-64bit-linux-summary"
-             href="http://zope3.pov.lt/buildbot/builders/py2.4-64bit-linux/builds/-1/steps/test/logs/summary">Python 2.4 on 64-bit Linux</a>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <a id="py2.5-32bit-linux-summary"
-             href="http://zope3.pov.lt/buildbot/builders/py2.5-32bit-linux/builds/-1/steps/test/logs/summary">Python 2.5 on 32-bit Linux</a>
-        </td>
-        <td>
-          <a id="py2.5-64bit-linux-summary"
-             href="http://zope3.pov.lt/buildbot/builders/py2.5-64bit-linux/builds/-1/steps/test/logs/summary">Python 2.5 on 64-bit Linux</a>
-      </tr>
-      <tr>
-        <td colspan="2" align="center">
-          Last build full log
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <a id="py2.4-32bit-linux-log"
-             href="http://zope3.pov.lt/buildbot/builders/py2.4-32bit-linux/builds/-1/steps/test/logs/stdio">Python 2.4 on 32-bit Linux</a>
-        </td>
-        <td>
-          <a id="py2.4-64bit-linux-log"
-             href="http://zope3.pov.lt/buildbot/builders/py2.4-64bit-linux/builds/-1/steps/test/logs/stdio">Python 2.4 on 64-bit Linux</a>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <a id="py2.5-32bit-linux-log"
-             href="http://zope3.pov.lt/buildbot/builders/py2.5-32bit-linux/builds/-1/steps/test/logs/stdio">Python 2.5 on 32-bit Linux</a>
-        </td>
-        <td>
-          <a id="py2.5-64bit-linux-log"
-             href="http://zope3.pov.lt/buildbot/builders/py2.5-64bit-linux/builds/-1/steps/test/logs/stdio">Python 2.5 on 64-bit Linux</a>
-      </tr>
-    </table>
-  </blockquote>
+  <table class="buildbot-status">
+    <tr>
+      <th>&nbsp;</th>
+      <th title="Ubuntu 8.04 LTS (Hardy Heron)">32-bit Linux</th>
+      <th title="Ubuntu 10.04 LTS (Lucid Lynx)">64-bit Linux</th>
+    </tr>
+    <tr>
+      <th>Python 2.4</th>
+      <td id="py2.4-32bit-linux">
+        <span id="py2.4-32bit-linux-status"></span>
+        <a id="py2.4-32bit-linux-summary" href="http://zope3.pov.lt/buildbot/builders/py2.4-32bit-linux/builds/-1/steps/test/logs/summary">summary</a>
+        /
+        <a id="py2.4-32bit-linux-log" href="http://zope3.pov.lt/buildbot/builders/py2.4-32bit-linux/builds/-1/steps/test/logs/stdio">full log</a>
+      </td>
+      <td id="py2.4-64bit-linux">
+        <span id="py2.4-64bit-linux-status"></span>
+        <a id="py2.4-64bit-linux-summary" href="http://zope3.pov.lt/buildbot/builders/py2.4-64bit-linux/builds/-1/steps/test/logs/summary">summary</a>
+        /
+        <a id="py2.4-64bit-linux-log" href="http://zope3.pov.lt/buildbot/builders/py2.4-64bit-linux/builds/-1/steps/test/logs/stdio">full log</a>
+      </td>
+    </tr>
+    <tr>
+      <th>Python 2.5</th>
+      <td id="py2.5-32bit-linux">
+        <span id="py2.5-32bit-linux-status"></span>
+        <a id="py2.5-32bit-linux-summary" href="http://zope3.pov.lt/buildbot/builders/py2.5-32bit-linux/builds/-1/steps/test/logs/summary">summary</a>
+        /
+        <a id="py2.5-32bit-linux-log" href="http://zope3.pov.lt/buildbot/builders/py2.5-32bit-linux/builds/-1/steps/test/logs/stdio">full log</a>
+      </td>
+      <td id="py2.5-64bit-linux">
+        <span id="py2.5-64bit-linux-status"></span>
+        <a id="py2.5-64bit-linux-summary" href="http://zope3.pov.lt/buildbot/builders/py2.5-64bit-linux/builds/-1/steps/test/logs/summary">summary</a>
+        /
+        <a id="py2.5-64bit-linux-log" href="http://zope3.pov.lt/buildbot/builders/py2.5-64bit-linux/builds/-1/steps/test/logs/stdio">full log</a>
+      </td>
+    </tr>
+  </table>
 
 </body>
 </html>
