@@ -33,6 +33,15 @@
             $.each(status, function(name, ok) {
                 $(document.getElementById(name)).addClass(ok ? "success" : "failure");
                 $(document.getElementById(name + '-status')).html(status_text[name] + ':<br>');
+                var words = status_text[name].split(' ');
+                if (words[0] == 'failed' && words[1]) {
+                    var step = words[1];
+                    if (step != 'test') {
+                        $(document.getElementById(name + '-summary')).hide().next().hide();
+                    }
+                    var url = 'http://zope3.pov.lt/buildbot/builders/' + name + '/builds/-1/steps/' + step + '/logs/';
+                    $(document.getElementById(name + '-log')).attr('href', url + 'stdio');
+                }
             });
         });
     });
@@ -55,13 +64,13 @@
       <td id="py2.4-32bit-linux">
         <span id="py2.4-32bit-linux-status"></span>
         <a id="py2.4-32bit-linux-summary" href="http://zope3.pov.lt/buildbot/builders/py2.4-32bit-linux/builds/-1/steps/test/logs/summary">summary</a>
-        /
+        <span class="sep">/</span>
         <a id="py2.4-32bit-linux-log" href="http://zope3.pov.lt/buildbot/builders/py2.4-32bit-linux/builds/-1/steps/test/logs/stdio">full log</a>
       </td>
       <td id="py2.4-64bit-linux">
         <span id="py2.4-64bit-linux-status"></span>
         <a id="py2.4-64bit-linux-summary" href="http://zope3.pov.lt/buildbot/builders/py2.4-64bit-linux/builds/-1/steps/test/logs/summary">summary</a>
-        /
+        <span class="sep">/</span>
         <a id="py2.4-64bit-linux-log" href="http://zope3.pov.lt/buildbot/builders/py2.4-64bit-linux/builds/-1/steps/test/logs/stdio">full log</a>
       </td>
     </tr>
@@ -70,13 +79,13 @@
       <td id="py2.5-32bit-linux">
         <span id="py2.5-32bit-linux-status"></span>
         <a id="py2.5-32bit-linux-summary" href="http://zope3.pov.lt/buildbot/builders/py2.5-32bit-linux/builds/-1/steps/test/logs/summary">summary</a>
-        /
+        <span class="sep">/</span>
         <a id="py2.5-32bit-linux-log" href="http://zope3.pov.lt/buildbot/builders/py2.5-32bit-linux/builds/-1/steps/test/logs/stdio">full log</a>
       </td>
       <td id="py2.5-64bit-linux">
         <span id="py2.5-64bit-linux-status"></span>
         <a id="py2.5-64bit-linux-summary" href="http://zope3.pov.lt/buildbot/builders/py2.5-64bit-linux/builds/-1/steps/test/logs/summary">summary</a>
-        /
+        <span class="sep">/</span>
         <a id="py2.5-64bit-linux-log" href="http://zope3.pov.lt/buildbot/builders/py2.5-64bit-linux/builds/-1/steps/test/logs/stdio">full log</a>
       </td>
     </tr>
