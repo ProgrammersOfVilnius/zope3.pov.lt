@@ -29,19 +29,25 @@
             boxes.filter('.success').prev('td').children('a').map(function(){status[$(this).text()] = true;});
             boxes.filter('.failure').prev('td').children('a').map(function(){status[$(this).text()] = false;});
             var status_text = {};
-            boxes.map(function(){status_text[$(this).prev('td').children('a').text()] = $(this).html().split('<br>').slice(1).join(' ');});
+            var build_number = {};
+            boxes.map(function(){
+                var name = $(this).prev('td').children('a').text();
+                status_text[name] = $(this).html().split('<br>').slice(1).join(' ');
+                build_number[name] = $(this).children('a').attr('href').split('/')[3];
+            });
             $.each(status, function(name, ok) {
                 $(document.getElementById(name)).addClass(ok ? "success" : "failure");
                 $(document.getElementById(name + '-status')).html(status_text[name] + ':<br>');
+                var build = build_number[name];
                 var words = status_text[name].split(' ');
-                if (words[0] == 'failed' && words[1]) {
-                    var step = words[1];
-                    if (step != 'test') {
-                        $(document.getElementById(name + '-summary')).hide().next().hide();
-                    }
-                    var url = 'http://zope3.pov.lt/buildbot/builders/' + name + '/builds/-1/steps/' + step + '/logs/';
-                    $(document.getElementById(name + '-log')).attr('href', url + 'stdio');
+                var step = (words[0] == 'failed' ? words[1] : 'test');
+                var url = 'http://zope3.pov.lt/buildbot/builders/' + name + '/builds/' + build + '/steps/' + step + '/logs/';
+                if (step != 'test') {
+                    $(document.getElementById(name + '-summary')).hide().next().hide();
+                } else {
+                    $(document.getElementById(name + '-summary')).attr('href', url + 'summary');
                 }
+                $(document.getElementById(name + '-log')).attr('href', url + 'stdio');
             });
         });
     });
