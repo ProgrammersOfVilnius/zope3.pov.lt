@@ -43,7 +43,10 @@
                 var step = (words[0] == 'failed' ? words[1] : 'test');
                 var build_url = 'http://zope3.pov.lt/buildbot/builders/' + name + '/builds/' + build;
                 var step_url = build_url + '/steps/' + step;
-                if (step != 'test') {
+                if (step == 'failed') { // "failed failed slave lost"
+                    $(document.getElementById(name + '-summary')).attr('href', build_url).text('all steps');
+                    $(document.getElementById(name + '-log')).hide().prev('.sep').hide();
+                } else if (step != 'test') {
                     $(document.getElementById(name + '-summary')).attr('href', build_url).text('all steps');
                     $(document.getElementById(name + '-log')).attr('href', step_url + '/logs/stdio').text(step + ' log');
                 } else {
