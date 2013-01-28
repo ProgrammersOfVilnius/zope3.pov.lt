@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>zope.* on Python 3</title>
+  <link rel="stylesheet" href="/style.css" />
+  <style type="text/css">
+    table              { margin-bottom: 2em; }
+    th                 { vertical-align: bottom; }
+    th.package-name    { padding-left: 0.5em; padding-right: 0.5em; }
+    th.package-version { padding-left: 0.5em; padding-right: 0.5em; }
+    th.version-column  { width: 1.5em; }
+    td.supported       { text-align: center; background: #dfd; color: #000; }
+    td.unsupported     { text-align: center; background: #fdd; color: #000; }
+    td.probably        { text-align: center; background: #efd; color: #444; }
+    td.unknown         { text-align: center; background: #fdfdfd; color: #eee; }
+  </style>
+  <script type="text/javascript" src="/jquery/jquery.min.js"></script>
+  <script type="text/javascript">
+    // perhaps drop 3.0 and 3.1 from this list?  nobody cares about those
+    var known_versions = ['2.4', '2.5', '2.6', '2.7', '', '3.0', '3.1', '3.2', '3.3'];
+    $.getJSON('data.json', function(data) {
+        var tbl = $('#support-table');
+        tbl.html(
+          '<thead>' +
+            '<tr>' +
+              '<th class="package-name" rowspan="2">Package</th>' +
+              '<th class="package-version" rowspan="2">Version</th>' +
+              '<th colspan="'+known_versions.length+'">Python Versions</th>' +
+            '</tr>' +
+            '<tr>' +
+            '</tr>' +
+          '</thead>' +
+          '<tbody>' +
+          '</tbody>');
+        var last_header_row = tbl.find('thead > tr:last');
+        $.each(known_versions, function(idx, v) {
+            var th = $('<th class="version-column">').text(v);
+            th.appendTo(last_header_row);
+        });
+        var tbody = tbl.find('tbody');
+        $.each(data, function(idx, pkg) {
+            var row = $('<tr>');
+            $('<td>').text(pkg.name).appendTo(row);
+            $('<td>').text(pkg.version || '(unreleased)').appendTo(row);
+            $.each(known_versions, function(idx, v) {
+                if (!v) {
+                    // hack to add spacing because I suck at CSS
+                    row.append('<td>&nbsp;</td>');
+                } else if (pkg.supports.length == 0) {
+                    row.append('<td class="unknown">?</td>');
+                } else if ($.inArray(v, pkg.supports) != -1) {
+                    row.append('<td class="supported">+</td>');
+                } else if ($.inArray(v.split('.')[0], pkg.supports) != -1) {
+                    row.append('<td class="probably">?</td>');
+                } else {
+                    row.append('<td class="unsupported">-</td>');
+                }
+            });
+            row.appendTo(tbody);
+        });
+    });
+  </script>
+</head>
+<body>
+  <h1>Unofficial Zope 3 on Python 3 status page</h1>
+
+  <table id="support-table">
+    <tr>
+      <td>Loading...</td>
+    </tr>
+  </table>
+
+  <div class="footer"> 
+    Site maintained by <a href="http://pov.lt/">Programmers of Vilnius</a>.
+    This site uses <a href="http://validator.w3.org/check/referer">valid</a> HTML and CSS.<br /> 
+    If you experience any problems with the website, please contact <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#119;&#101;&#98;&#109;&#97;&#115;&#116;&#101;&#114;&#64;&#112;&#111;&#118;&#46;&#108;&#116;">&#119;&#101;&#98;&#109;&#97;&#115;&#116;&#101;&#114;&#64;&#112;&#111;&#118;&#46;&#108;&#116;</a>.
+  </div> 
+
+</body>
+</html>
