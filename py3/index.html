@@ -42,9 +42,10 @@
         data.sort(function(a, b) {
             return b.supports.length - a.supports.length;
         });
+        var pypi_url = 'http://pypi.python.org/pypi/';
         $.each(data, function(idx, pkg) {
             var row = $('<tr>');
-            $('<td>').text(pkg.name).appendTo(row);
+            $('<td>').append($('<a>').text(pkg.name).attr('href', pypi_url + pkg.name)).appendTo(row);
             $('<td>').text(pkg.version || '(unreleased)').appendTo(row);
             $.each(known_versions, function(idx, v) {
                 if (!v) {
