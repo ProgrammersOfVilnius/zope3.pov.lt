@@ -39,6 +39,9 @@
             th.appendTo(last_header_row);
         });
         var tbody = tbl.find('tbody');
+        data.sort(function(a, b) {
+            return b.supports.length - a.supports.length;
+        });
         $.each(data, function(idx, pkg) {
             var row = $('<tr>');
             $('<td>').text(pkg.name).appendTo(row);
