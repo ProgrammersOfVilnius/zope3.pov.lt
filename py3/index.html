@@ -36,6 +36,13 @@
 
     /* highlight on hover */
     tbody > tr:hover   { background: #ffd; }
+
+    /* sidebar */
+
+    .sidebar {
+      float: right;
+      margin-left: 2em;
+    }
   </style>
   <script type="text/javascript" src="/jquery/jquery.min.js"></script>
   <script type="text/javascript">
@@ -168,6 +175,10 @@
     </tr>
   </table>
 
+  <div class="sidebar">
+    <a href="deps.svg" title="See the dependency graph"><img src="deps-thumb.png" alt="Dependency graph"></a>
+  </div>
+
   <p>This page lists all projects from <a href="http://svn.zope.org">svn.zope.org</a>
     and the new <a href="https://github.com/ZopeFoundation">GitHub
     ZopeFoundation organization</a>, and shows the latest version published on
@@ -175,7 +186,7 @@
     explicitly declared supported Python versions from trove classifiers for
     that version.</p>
 
-  <p>The data are updated daily by a cron script.</p>
+  <p>The data are updated daily by a cron <a href="https://github.com/mgedmin/ztk-py3-status">script</a>.</p>
 
   <div class="footer"> 
     Site maintained by <a href="http://pov.lt/">Programmers of Vilnius</a>.
