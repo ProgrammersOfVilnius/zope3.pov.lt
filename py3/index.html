@@ -10,15 +10,19 @@
     th.package-name    { padding-left: 0.5em; padding-right: 0.5em; }
     th.package-version { padding-left: 0.5em; padding-right: 0.5em; }
     th.version-column  { width: 1.5em; }
+    td.unreleased      { color: #eee; }
     td.supported       { text-align: center; background: #dfd; color: #000; }
     td.unsupported     { text-align: center; background: #fdd; color: #000; }
     td.probably        { text-align: center; background: #efd; color: #444; }
     td.unknown         { text-align: center; background: #fdfdfd; color: #eee; }
+    td.blockers        { text-align: right; color: #c44; }
+    td.no-blockers     { color: #484; }
+    td.version         { white-space: nowrap; }
   </style>
   <script type="text/javascript" src="/jquery/jquery.min.js"></script>
   <script type="text/javascript">
     // perhaps drop 3.0 and 3.1 from this list?  nobody cares about those
-    var known_versions = ['2.4', '2.5', '2.6', '2.7', '', '3.0', '3.1', '3.2', '3.3'];
+    var known_versions = ['', '2.4', '2.5', '2.6', '2.7', '', '3.0', '3.1', '3.2', '3.3', ''];
     $.getJSON('data.json', function(data) {
         var tbl = $('#support-table');
         tbl.html(
@@ -26,7 +30,9 @@
             '<tr>' +
               '<th class="package-name" rowspan="2">Package</th>' +
               '<th class="package-version" rowspan="2">Version</th>' +
+              '<th class="supports-py3" rowspan="2">Supports Python 3</th>' +
               '<th colspan="'+known_versions.length+'">Python Versions</th>' +
+              '<th class="blockers" rowspan="2" title="Direct dependencies that have not been ported to Python 3 yet">Blockers</th>' +
             '</tr>' +
             '<tr>' +
             '</tr>' +
@@ -40,13 +46,32 @@
         });
         var tbody = tbl.find('tbody');
         data.sort(function(a, b) {
-            return b.supports.length - a.supports.length;
+            var r = 0;
+            if (r == 0) r = !!b.version - !!a.version;        // unreleased last
+            if (r == 0) r = b.supports_py3 - a.supports_py3;  // py3k-supporting first
+            if (r == 0) r = b.supports.length - a.supports.length;
+            if (r == 0) r = a.blockers.length - b.blockers.length;
+            if (r == 0) r = (a.name < b.name ? -1 : 1); // assume a.name != b.name
+            return r;
         });
         var pypi_url = 'http://pypi.python.org/pypi/';
         $.each(data, function(idx, pkg) {
             var row = $('<tr>');
-            $('<td>').append($('<a>').text(pkg.name).attr('href', pypi_url + pkg.name)).appendTo(row);
-            $('<td>').text(pkg.version || '(unreleased)').appendTo(row);
+            var td = $('<td>')
+                  .append($('<a>')
+                  .text(pkg.name)
+                  .attr('href', pypi_url + pkg.name))
+                  .appendTo(row);
+            td = $('<td>')
+                  .addClass('version')
+                  .text(pkg.version || '(unreleased)')
+                  .appendTo(row);
+            if (!pkg.version) td.addClass('unreleased');
+            td = $('<td>')
+                  .text(pkg.supports_py3 ? 'yes' : 'no')
+                  .addClass(pkg.supports_py3 ? 'supported' :
+                            pkg.version ? 'unsupported' : 'unknown')
+                  .appendTo(row);
             $.each(known_versions, function(idx, v) {
                 if (!v) {
                     // hack to add spacing because I suck at CSS
@@ -61,6 +86,13 @@
                     row.append('<td class="unsupported">-</td>');
                 }
             });
+            var blockers = pkg.blockers || [];
+            td = $('<td>')
+                  .addClass('blockers')
+                  .text(blockers.length)
+                  .attr('title', blockers.join('\n'))
+                  .appendTo(row);
+            if (blockers.length == 0) td.addClass('no-blockers');
             row.appendTo(tbody);
         });
     });
