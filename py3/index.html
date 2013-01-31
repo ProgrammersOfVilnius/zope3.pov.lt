@@ -5,29 +5,48 @@
   <title>zope.* on Python 3</title>
   <link rel="stylesheet" href="/style.css" />
   <style type="text/css">
-    table              { margin-bottom: 2em; }
-    th                 { vertical-align: bottom; }
-    th.package-name    { padding-left: 0.5em; padding-right: 0.5em; }
-    th.package-version { padding-left: 0.5em; padding-right: 0.5em; }
-    th.version-column  { width: 1.5em; }
+    #support-table     { margin-bottom: 2em; table-layout: fixed; }
+    #support-table th  { vertical-align: bottom; }
+
+    .version-column    { min-width: 2em; }
+    .blockers, .blocks { min-width: 5.5em; }
+
+    /* version column */
+    td.version         { white-space: nowrap; }
     td.unreleased      { color: #eee; }
+
+    /* supported/unsupported flags */
     td.supported       { text-align: center; background: #dfd; color: #000; }
     td.unsupported     { text-align: center; background: #fdd; color: #000; }
     td.probably        { text-align: center; background: #efd; color: #444; }
     td.unknown         { text-align: center; background: #fdfdfd; color: #eee; }
-    td.blockers        { text-align: center; }
-    td.blockers        { background: #fdd; color: #c44; }
-    td.no-blockers     { background: #dfd; color: #484; }
-    td.blockers-na     { background: #fdfdfd; color: #eee; }
-    td.version         { white-space: nowrap; }
+
+    /* blocker counts */
+    td.blockers,    td.blocks         { text-align: center; }
+    td.blockers,    td.blocks         { background: #fdd; color: #c44; }
+    td.no-blockers, td.blocks-nothing { background: #dfd; color: #484; }
+    td.blockers-na, td.blocks-na      { background: #fdfdfd; color: #eee; }
   </style>
   <script type="text/javascript" src="/jquery/jquery.min.js"></script>
   <script type="text/javascript">
     // perhaps drop 3.0 and 3.1 from this list?  nobody cares about those
+    // empty strings are for spacing (because I can't figure out how to achieve that effect with CSS)
     var known_versions = ['', '2.4', '2.5', '2.6', '2.7', '', '3.0', '3.1', '3.2', '3.3', ''];
     $.getJSON('data.json', function(data) {
         var tbl = $('#support-table');
         tbl.html(
+          '<colgroup>' +
+            '<col class="package-name"></col>' +
+            '<col class="package-version"></col>' +
+            '<col class="supports-py3"></col>' +
+          '</colgroup>' +
+          '<colgroup>' +
+            '<col class="version-column" span="'+known_versions.length+'"></col>' +
+          '</colgroup>' +
+          '<colgroup>' +
+            '<col class="blockers"></col>' +
+            '<col class="blocks"></col>' +
+          '</colgroup>' +
           '<thead>' +
             '<tr>' +
               '<th class="package-name" rowspan="2">Package</th>' +
@@ -35,6 +54,7 @@
               '<th class="supports-py3" rowspan="2">Supports Python 3</th>' +
               '<th colspan="'+known_versions.length+'">Python Versions</th>' +
               '<th class="blockers" rowspan="2" title="Direct dependencies that have not been ported to Python 3 yet">Blockers</th>' +
+              '<th class="blocks" rowspan="2" title="Packages that cannot be ported to Python 3 yet because they depend on this package">Blocks</th>' +
             '</tr>' +
             '<tr>' +
             '</tr>' +
@@ -51,7 +71,6 @@
             var r = 0;
             if (r == 0) r = !!b.version - !!a.version;        // unreleased last
             if (r == 0) r = b.supports_py3 - a.supports_py3;  // py3k-supporting first
-            //if (r == 0) r = b.supports.length - a.supports.length;
             if (r == 0) r = !!b.supports.length - !!a.supports.length;
             if (r == 0) r = a.blockers.length - b.blockers.length;
             if (r == 0) r = (a.name < b.name ? -1 : 1); // assume a.name != b.name
@@ -61,9 +80,8 @@
         $.each(data, function(idx, pkg) {
             var row = $('<tr>');
             var td = $('<td>')
-                  .append($('<a>')
-                  .text(pkg.name)
-                  .attr('href', pypi_url + pkg.name))
+                  .append(pkg.version ? $('<a>').text(pkg.name).attr('href', pypi_url + pkg.name)
+                                      : pkg.name)
                   .appendTo(row);
             td = $('<td>')
                   .addClass('version')
@@ -99,6 +117,16 @@
                 td.addClass('blockers-na')
             else if (blockers.length == 0)
                 td.addClass('no-blockers');
+            var blocks = pkg.blocks || [];
+            td = $('<td>')
+                  .addClass('blocks')
+                  .text(blocks.length)
+                  .attr('title', blocks.join('\n'))
+                  .appendTo(row);
+            if (pkg.supports_py3 || !pkg.version)
+                td.addClass('blocks-na')
+            else if (blocks.length == 0)
+                td.addClass('blocks-nothing');
             row.appendTo(tbody);
         });
     });
