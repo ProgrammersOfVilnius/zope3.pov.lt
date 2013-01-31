@@ -12,8 +12,15 @@
     .blockers, .blocks { min-width: 5.5em; }
 
     /* version column */
-    td.version         { white-space: nowrap; }
+    td.version         { text-align: center; white-space: nowrap; }
     td.unreleased      { color: #eee; }
+
+    /* vcs column */
+    td.vcs > a:link    { text-align: center; padding-left: 0.5em; padding-right: 0.5em; }
+    td.vcs > a:link    { color: white; text-decoration: none; display: block; }
+    td.vcs > a:visited { color: #eee; }
+    td.git             { background: #da4; }
+    td.svn             { background: #c44; }
 
     /* supported/unsupported flags */
     td.supported       { text-align: center; background: #dfd; color: #000; }
@@ -40,6 +47,7 @@
         tbl.html(
           '<colgroup>' +
             '<col class="package-name"></col>' +
+            '<col class="package-vcs"></col>' +
             '<col class="package-version"></col>' +
             '<col class="supports-py3"></col>' +
           '</colgroup>' +
@@ -53,6 +61,7 @@
           '<thead>' +
             '<tr>' +
               '<th class="package-name" rowspan="2">Package</th>' +
+              '<th class="package-vcs" rowspan="2">VCS</th>' +
               '<th class="package-version" rowspan="2">Version</th>' +
               '<th class="supports-py3" rowspan="2">Supports Python 3</th>' +
               '<th colspan="'+known_versions.length+'">Python Versions</th>' +
@@ -81,21 +90,33 @@
         });
         var pypi_url = 'http://pypi.python.org/pypi/';
         $.each(data, function(idx, pkg) {
-            var row = $('<tr>');
-            var td = $('<td>')
+            var row = $('<tr>'), td;
+            // package name
+            td = $('<td>')
                   .append(pkg.version ? $('<a>').text(pkg.name).attr('href', pypi_url + pkg.name)
                                       : pkg.name)
                   .appendTo(row);
+            // package vcs
+            var uses_git = (pkg.source_web_url.search(/github.com/) != -1);
+            td = $('<td>')
+                  .addClass('vcs')
+                  .addClass(uses_git ? 'git' : 'svn')
+                  .append($('<a>').attr('href', pkg.source_web_url)
+                                  .text(uses_git ? 'Git' : 'SVN'))
+                  .appendTo(row);
+            // package version
             td = $('<td>')
                   .addClass('version')
                   .text(pkg.version || '(unreleased)')
                   .appendTo(row);
             if (!pkg.version) td.addClass('unreleased');
+            // python 3 support
             td = $('<td>')
                   .text(pkg.supports_py3 ? 'yes' : 'no')
                   .addClass(pkg.supports_py3 ? 'supported' :
                             pkg.version ? 'unsupported' : 'unknown')
                   .appendTo(row);
+            // detailed python version support
             $.each(known_versions, function(idx, v) {
                 if (!v) {
                     // hack to add spacing because I suck at CSS
@@ -110,6 +131,7 @@
                     row.append('<td class="unsupported">-</td>');
                 }
             });
+            // blockers
             var blockers = pkg.blockers || [];
             td = $('<td>')
                   .addClass('blockers')
@@ -120,6 +142,7 @@
                 td.addClass('blockers-na')
             else if (blockers.length == 0)
                 td.addClass('no-blockers');
+            // blocks
             var blocks = pkg.blocks || [];
             td = $('<td>')
                   .addClass('blocks')
@@ -130,6 +153,7 @@
                 td.addClass('blocks-na')
             else if (blocks.length == 0)
                 td.addClass('blocks-nothing');
+            // that's it for this row
             row.appendTo(tbody);
         });
     });
