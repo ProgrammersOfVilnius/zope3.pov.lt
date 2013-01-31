@@ -15,8 +15,10 @@
     td.unsupported     { text-align: center; background: #fdd; color: #000; }
     td.probably        { text-align: center; background: #efd; color: #444; }
     td.unknown         { text-align: center; background: #fdfdfd; color: #eee; }
-    td.blockers        { text-align: right; color: #c44; }
-    td.no-blockers     { color: #484; }
+    td.blockers        { text-align: center; }
+    td.blockers        { background: #fdd; color: #c44; }
+    td.no-blockers     { background: #dfd; color: #484; }
+    td.blockers-na     { background: #fdfdfd; color: #eee; }
     td.version         { white-space: nowrap; }
   </style>
   <script type="text/javascript" src="/jquery/jquery.min.js"></script>
@@ -49,7 +51,8 @@
             var r = 0;
             if (r == 0) r = !!b.version - !!a.version;        // unreleased last
             if (r == 0) r = b.supports_py3 - a.supports_py3;  // py3k-supporting first
-            if (r == 0) r = b.supports.length - a.supports.length;
+            //if (r == 0) r = b.supports.length - a.supports.length;
+            if (r == 0) r = !!b.supports.length - !!a.supports.length;
             if (r == 0) r = a.blockers.length - b.blockers.length;
             if (r == 0) r = (a.name < b.name ? -1 : 1); // assume a.name != b.name
             return r;
@@ -92,14 +95,17 @@
                   .text(blockers.length)
                   .attr('title', blockers.join('\n'))
                   .appendTo(row);
-            if (blockers.length == 0) td.addClass('no-blockers');
+            if (pkg.supports_py3 || !pkg.version)
+                td.addClass('blockers-na')
+            else if (blockers.length == 0)
+                td.addClass('no-blockers');
             row.appendTo(tbody);
         });
     });
   </script>
 </head>
 <body>
-  <h1>Unofficial Zope 3 on Python 3 status page</h1>
+  <h1>Unofficial Zope on Python 3 status page</h1>
 
   <table id="support-table">
     <tr>
