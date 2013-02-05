@@ -49,7 +49,7 @@
     // perhaps drop 3.0 and 3.1 from this list?  nobody cares about those
     // empty strings are for spacing (because I can't figure out how to achieve that effect with CSS)
     var known_versions = ['', '2.4', '2.5', '2.6', '2.7', '', '3.0', '3.1', '3.2', '3.3', ''];
-    $.getJSON('data.json', function(data) {
+    $.getJSON('data.json', function(data, textStatus, jqXHR) {
         var tbl = $('#support-table');
         tbl.html(
           '<colgroup>' +
@@ -163,6 +163,8 @@
             // that's it for this row
             row.appendTo(tbody);
         });
+        var lastModified = jqXHR.getResponseHeader("Last-Modified");
+        $("#last-modified").text("Currently shown dataset was computed on " + lastModified + ".");
     });
   </script>
 </head>
@@ -186,7 +188,8 @@
     explicitly declared supported Python versions from trove classifiers for
     that version.</p>
 
-  <p>The data are updated daily by a <a href="https://gist.github.com/4686862">cron script</a>.</p>
+  <p>The data are updated daily by a <a href="https://gist.github.com/4686862">cron script</a>.
+    <span id="last-modified"></span></p>
 
   <div class="footer"> 
     Site maintained by <a href="http://pov.lt/">Programmers of Vilnius</a>.
