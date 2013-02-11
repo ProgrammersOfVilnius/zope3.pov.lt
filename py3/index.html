@@ -5,6 +5,7 @@
   <title>zope.* on Python 3</title>
   <link rel="stylesheet" href="/style.css" />
   <style type="text/css">
+    #support-table     { margin-left: -6em; }
     #support-table     { margin-bottom: 2em; table-layout: fixed; }
     #support-table th  { vertical-align: bottom; }
 
@@ -33,6 +34,11 @@
     td.blockers,    td.blocks         { background: #fdd; color: #c44; }
     td.no-blockers, td.blocks-nothing { background: #dfd; color: #484; }
     td.blockers-na, td.blocks-na      { background: #fdfdfd; color: #eee; }
+
+    /* depgraph column */
+    td.depgraph                       { text-align: center; }
+    td.depgraph > a:link,
+    td.depgraph > a:visited           {  }
 
     /* highlight on hover */
     tbody > tr:hover   { background: #ffd; }
@@ -64,6 +70,7 @@
           '<colgroup>' +
             '<col class="blockers"></col>' +
             '<col class="blocks"></col>' +
+            '<col class="depgraph"></col>' +
           '</colgroup>' +
           '<thead>' +
             '<tr>' +
@@ -74,6 +81,7 @@
               '<th colspan="'+known_versions.length+'">Python Versions</th>' +
               '<th class="blockers" rowspan="2" title="Direct dependencies that have not been ported to Python 3 yet">Blockers</th>' +
               '<th class="blocks" rowspan="2" title="Packages that cannot be ported to Python 3 yet because they depend on this package">Blocks</th>' +
+              '<th class="depgraph" rowspan="2">Dependency Graph</th>' +
             '</tr>' +
             '<tr>' +
             '</tr>' +
@@ -160,6 +168,17 @@
                 td.addClass('blocks-na')
             else if (blocks.length == 0)
                 td.addClass('blocks-nothing');
+            // dependency graph
+            td = $('<td>')
+                  .addClass('depgraph')
+                  .append($('<a>').attr('href', 'deps/' + pkg.name + '.png')
+                                  .addClass('png')
+                                  .text('PNG'))
+                  .append(' / ')
+                  .append($('<a>').attr('href', 'deps/' + pkg.name + '.svg')
+                                  .addClass('svg')
+                                  .text('SVG'))
+                  .appendTo(row);
             // that's it for this row
             row.appendTo(tbody);
         });
