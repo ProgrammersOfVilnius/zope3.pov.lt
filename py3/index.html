@@ -10,7 +10,7 @@
     #support-table     { border-spacing: 1px; }
     #support-table th  { vertical-align: bottom; }
 
-    .version-column    { min-width: 2em; }
+    .version-column    { min-width: 1em; }
     .blockers, .blocks { min-width: 5.5em; }
 
     /* version column */
@@ -38,9 +38,11 @@
     td.blockers-na, td.blocks-na      { background: #fdfdfd; color: #eee; }
 
     /* depgraph column */
-    td.depgraph                       { text-align: center; }
+    td.depgraph                       { text-align: center; padding: 0; white-space: nowrap; }
     td.depgraph > a:link,
-    td.depgraph > a:visited           {  }
+    td.depgraph > a:visited           { display: inline-block; text-decoration: none; padding: 2px 4px; margin-left: 1px; color: white; }
+    a.png              { background: #4c4; }
+    a.svg              { background: #4cc; }
 
     /* highlight on hover */
     tbody > tr:hover   { background: #ffd; }
@@ -73,6 +75,7 @@
             '<col class="blockers"></col>' +
             '<col class="blocks"></col>' +
             '<col class="depgraph"></col>' +
+            '<col class="depgraph"></col>' +
           '</colgroup>' +
           '<thead>' +
             '<tr>' +
@@ -83,7 +86,8 @@
               '<th colspan="'+known_versions.length+'">Python Versions</th>' +
               '<th class="blockers" rowspan="2" title="Direct dependencies that have not been ported to Python 3 yet">Blockers</th>' +
               '<th class="blocks" rowspan="2" title="Packages that cannot be ported to Python 3 yet because they depend on this package">Blocks</th>' +
-              '<th class="depgraph" rowspan="2">Dependency Graph</th>' +
+              '<th class="depgraph" rowspan="2">Dep. Graph</th>' +
+              '<th class="depgraph" rowspan="2">(incl. extras)</th>' +
             '</tr>' +
             '<tr>' +
             '</tr>' +
@@ -193,8 +197,17 @@
                   .append($('<a>').attr('href', 'deps/' + pkg.name + '.png')
                                   .addClass('png')
                                   .text('PNG'))
-                  .append(' / ')
                   .append($('<a>').attr('href', 'deps/' + pkg.name + '.svg')
+                                  .addClass('svg')
+                                  .text('SVG'))
+                  .appendTo(row);
+            // dependency graph (with extras)
+            td = $('<td>')
+                  .addClass('depgraph')
+                  .append($('<a>').attr('href', 'deps-with-extras/' + pkg.name + '.png')
+                                  .addClass('png')
+                                  .text('PNG'))
+                  .append($('<a>').attr('href', 'deps-with-extras/' + pkg.name + '.svg')
                                   .addClass('svg')
                                   .text('SVG'))
                   .appendTo(row);
