@@ -141,7 +141,7 @@
                 } else if ($.inArray(v, pkg.supports) != -1) {
                     row.append('<td class="supported">+</td>');
                 } else if ($.inArray(v.split('.')[0], pkg.supports) != -1) {
-                    row.append('<td class="probably">?</td>');
+                    row.append('<td class="probably" title="supports Python ' + v.split('.')[0] + ', minor versions not listed">?</td>');
                 } else {
                     row.append('<td class="unsupported">-</td>');
                 }
