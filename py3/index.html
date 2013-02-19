@@ -129,17 +129,19 @@
             if (pkg.svn_web_url && pkg.svn_web_url != primary_url) {
                 var a = $('<a>').attr('href', pkg.svn_web_url)
                                   .addClass('svn secondary')
-                                  .text('(svn)');
+                                  .text('(SVN)');
                 if (pkg.removed_from_svn)
-                   a.attr('title', 'moved to Github');
+                   a.text('(svn)')
+                    .attr('title', 'moved to Github');
                 td.append(a);
             }
             if (pkg.github_web_url && pkg.github_web_url != primary_url) {
                 var a = $('<a>').attr('href', pkg.github_web_url)
                                   .addClass('git secondary')
-                                  .text('(git)');
+                                  .text('(Git)');
                 if (pkg.empty_github_repo)
-                   a.attr('title', 'empty Github repository');
+                   a.text('(git)')
+                    .attr('title', 'empty Github repository');
                 td.append(a);
             }
             // package version
