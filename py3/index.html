@@ -5,7 +5,7 @@
   <title>zope.* on Python 3</title>
   <link rel="stylesheet" href="/style.css" />
   <style type="text/css">
-    #progress          { position: absolute; top: 2em; right: 2em; }
+    #image-format-choice { position: absolute; top: 2em; right: 2em; }
 
     #support-table     { margin-left: -6em; }
     #support-table     { margin-bottom: 2em; table-layout: fixed; }
@@ -13,7 +13,10 @@
     #support-table th  { vertical-align: bottom; }
 
     .version-column    { min-width: 1em; }
-    .blockers, .blocks { min-width: 5.5em; }
+    .blockers, .blocks { min-width: 5em; }
+
+    .prefer-svg a.png  { display: none !important; }
+    .prefer-png a.svg  { display: none !important; }
 
     /* version column */
     td.version         { text-align: center; white-space: nowrap; }
@@ -58,6 +61,15 @@
   </style>
   <script type="text/javascript" src="/jquery/jquery.min.js"></script>
   <script type="text/javascript">
+  $(function() {
+    $("#use-png").click(function(e) {
+        e.preventDefault();
+        $("#support-table").removeClass("prefer-svg").addClass("prefer-png");
+    });
+    $("#use-svg").click(function(e) {
+        e.preventDefault();
+        $("#support-table").removeClass("prefer-png").addClass("prefer-svg");
+    });
     // perhaps drop 3.0 and 3.1 from this list?  nobody cares about those
     // empty strings are for spacing (because I can't figure out how to achieve that effect with CSS)
     var known_versions = ['', '2.4', '2.5', '2.6', '2.7', '', '3.0', '3.1', '3.2', '3.3', '', 'PyPy', ''];
@@ -232,6 +244,7 @@
               .text(count_py3 + ' out of ' + count_released + ' packages ported')
               .attr('style', null);
     });
+  });
   </script>
 </head>
 <body>
@@ -239,7 +252,12 @@
 
   <progress id="progress" style="display: none"></progress>
 
-  <table id="support-table">
+  <div id="image-format-choice">
+    Do you prefer <a href="#" id="use-png">PNG</a> or
+    <a href="#" id="use-svg">SVG</a>?
+  </div>
+
+  <table id="support-table" class="prefer-svg">
     <tr>
       <td>Loading...</td>
     </tr>
