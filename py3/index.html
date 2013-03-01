@@ -44,8 +44,9 @@
 
     /* depgraph column */
     td.depgraph                       { text-align: center; padding: 0; white-space: nowrap; }
-    td.depgraph > a:link,
-    td.depgraph > a:visited           { display: inline-block; text-decoration: none; padding: 2px 4px; margin-left: 1px; color: white; }
+
+    a.png:link, a.png:visited,
+    a.svg:link, a.svg:visited         { display: inline-block; text-decoration: none; padding: 2px 4px; margin-left: 1px; color: white; }
     a.png              { background: #4c4; }
     a.svg              { background: #4cc; }
 
@@ -253,8 +254,8 @@
   <progress id="progress" style="display: none"></progress>
 
   <div id="image-format-choice">
-    Do you prefer <a href="#" id="use-png">PNG</a> or
-    <a href="#" id="use-svg">SVG</a>?
+    Do you prefer <a href="#" class="png" id="use-png">PNG</a> or
+    <a href="#" class="svg" id="use-svg">SVG</a>?
   </div>
 
   <table id="support-table" class="prefer-svg">
