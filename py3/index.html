@@ -58,7 +58,7 @@
   <script type="text/javascript">
     // perhaps drop 3.0 and 3.1 from this list?  nobody cares about those
     // empty strings are for spacing (because I can't figure out how to achieve that effect with CSS)
-    var known_versions = ['', '2.4', '2.5', '2.6', '2.7', '', '3.0', '3.1', '3.2', '3.3', ''];
+    var known_versions = ['', '2.4', '2.5', '2.6', '2.7', '', '3.0', '3.1', '3.2', '3.3', '', 'PyPy', ''];
     $.getJSON('data.json', function(data, textStatus, jqXHR) {
         var tbl = $('#support-table');
         tbl.html(
@@ -163,7 +163,7 @@
                     row.append('<td>&nbsp;</td>');
                 } else if (pkg.supports.length == 0) {
                     row.append('<td class="unknown">?</td>');
-                } else if ($.inArray(v, pkg.supports) != -1) {
+                } else if ($.inArray(v.toLowerCase(), pkg.supports) != -1) {
                     row.append('<td class="supported">+</td>');
                 } else if ($.inArray(v.split('.')[0], pkg.supports) != -1) {
                     row.append('<td class="probably" title="supports Python ' + v.split('.')[0] + ', minor versions not listed">?</td>');
