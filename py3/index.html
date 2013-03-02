@@ -31,10 +31,10 @@
     a.svn              { background: #c44; }
 
     /* supported/unsupported flags */
-    td.supported       { text-align: center; background: #dfd; color: #000; }
-    td.unsupported     { text-align: center; background: #fdd; color: #000; }
-    td.probably        { text-align: center; background: #efd; color: #444; }
-    td.unknown         { text-align: center; background: #fdfdfd; color: #eee; }
+    td.supported       { min-width: 2em; text-align: center; background: #dfd; color: #000; }
+    td.unsupported     { min-width: 2em; text-align: center; background: #fdd; color: #000; }
+    td.probably        { min-width: 2em; text-align: center; background: #efd; color: #444; }
+    td.unknown         { min-width: 2em; text-align: center; background: #fdfdfd; color: #eee; }
 
     /* blocker counts */
     td.blockers,    td.blocks         { text-align: center; }
@@ -71,9 +71,8 @@
         e.preventDefault();
         $("#support-table").removeClass("prefer-png").addClass("prefer-svg");
     });
-    // perhaps drop 3.0 and 3.1 from this list?  nobody cares about those
     // empty strings are for spacing (because I can't figure out how to achieve that effect with CSS)
-    var known_versions = ['', '2.4', '2.5', '2.6', '2.7', '', '3.0', '3.1', '3.2', '3.3', '', 'PyPy', ''];
+    var known_versions = ['', '2.6', '2.7', '', '3.2', '3.3', '', 'PyPy', ''];
     $.getJSON('data.json', function(data, textStatus, jqXHR) {
         var tbl = $('#support-table');
         tbl.html(
