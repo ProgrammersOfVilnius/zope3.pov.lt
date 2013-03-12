@@ -50,6 +50,9 @@
     a.png              { background: #4c4; }
     a.svg              { background: #4cc; }
 
+    /* build status column */
+    td.buildstatus                    { padding-top: 0; padding-bottom: 0; }
+
     /* highlight on hover */
     tbody > tr:hover   { background: #ffd; }
 
@@ -90,6 +93,7 @@
             '<col class="blocks"></col>' +
             '<col class="depgraph"></col>' +
             '<col class="depgraph"></col>' +
+            '<col class="buildstatus"></col>' +
           '</colgroup>' +
           '<thead>' +
             '<tr>' +
@@ -102,6 +106,7 @@
               '<th class="blocks" rowspan="2" title="Packages that cannot be ported to Python 3 yet because they depend on this package">Blocks</th>' +
               '<th class="depgraph" rowspan="2">Dep. Graph</th>' +
               '<th class="depgraph" rowspan="2">(incl. extras)</th>' +
+              '<th class="buildstatus" rowspan="2">Build status</th>' +
             '</tr>' +
             '<tr>' +
             '</tr>' +
@@ -231,6 +236,15 @@
                                   .addClass('svg')
                                   .text('SVG'))
                   .appendTo(row);
+            // build status
+            td = $('<td>')
+                  .addClass('buildstatus');
+            if (pkg.github_web_url == "https://github.com/zopefoundation/" + pkg.name
+                && !pkg.empty_github_repo) {
+                td.append($('<a>').attr('href', 'https://travis-ci.org/zopefoundation/' + pkg.name)
+                                  .append($('<img>').attr('src', 'https://api.travis-ci.org/zopefoundation/' + pkg.name + '.png?branch=master')));
+            }
+            td.appendTo(row);
             // that's it for this row
             row.appendTo(tbody);
         });
