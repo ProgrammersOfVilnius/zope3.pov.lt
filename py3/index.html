@@ -240,10 +240,11 @@
             // build status
             td = $('<td>')
                   .addClass('buildstatus');
-            if (pkg.github_web_url == "https://github.com/zopefoundation/" + pkg.name
-                && !pkg.empty_github_repo) {
-                td.append($('<a>').attr('href', 'https://travis-ci.org/zopefoundation/' + pkg.name)
-                                  .append($('<img>').attr('src', 'https://api.travis-ci.org/zopefoundation/' + pkg.name + '.png?branch=master')));
+            if (pkg.github_web_url && !pkg.empty_github_repo &&
+                pkg.github_web_url.slice(0, 19) == "https://github.com/") {
+                var travis_url = 'https://travis-ci.org/' + pkg.github_web_url.slice(19);
+                td.append($('<a>').attr('href', travis_url)
+                                  .append($('<img>').attr('src', travis_url + '.png?branch=master')));
             }
             td.appendTo(row);
             // that's it for this row
