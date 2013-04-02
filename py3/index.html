@@ -18,6 +18,12 @@
     .prefer-svg a.png  { display: none !important; }
     .prefer-png a.svg  { display: none !important; }
 
+    /* progress bar */
+    progress           { border: 1px solid white; background: #fdd; }
+    progress::-webkit-progress-bar   { background: #fdd; }
+    progress::-webkit-progress-value { background: #dfd; }
+    progress::-moz-progress-bar      { background: #dfd; }
+
     /* version column */
     td.version         { text-align: center; white-space: nowrap; }
     td.unreleased      { color: #eee; }
