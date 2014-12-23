@@ -2,27 +2,15 @@
 <html>
 <head>
   <meta charset="UTF-8" />
-  <title>zope.* on Python 3</title>
+  <title>Travis CI for zope.*</title>
   <link rel="stylesheet" href="/style.css" />
   <style type="text/css">
-    #image-format-choice { position: absolute; top: 2em; right: 2em; }
-
     #support-table     { margin-left: -6em; }
     #support-table     { margin-bottom: 2em; table-layout: fixed; }
     #support-table     { border-spacing: 1px; }
     #support-table th  { vertical-align: bottom; }
 
     .version-column    { min-width: 1em; }
-    .blockers, .blocks { min-width: 5em; }
-
-    .prefer-svg a.png  { display: none !important; }
-    .prefer-png a.svg  { display: none !important; }
-
-    /* progress bar */
-    progress           { border: 1px solid white; background: #fdd; }
-    progress::-webkit-progress-bar   { background: #fdd; }
-    progress::-webkit-progress-value { background: #dfd; }
-    progress::-moz-progress-bar      { background: #dfd; }
 
     /* version column */
     td.version         { text-align: center; white-space: nowrap; }
@@ -42,20 +30,6 @@
     td.probably        { min-width: 2em; text-align: center; background: #efd; color: #444; }
     td.unknown         { min-width: 2em; text-align: center; background: #fdfdfd; color: #eee; }
 
-    /* blocker counts */
-    td.blockers,    td.blocks         { text-align: center; }
-    td.blockers,    td.blocks         { background: #fdd; color: #c44; }
-    td.no-blockers, td.blocks-nothing { background: #dfd; color: #484; }
-    td.blockers-na, td.blocks-na      { background: #fdfdfd; color: #eee; }
-
-    /* depgraph column */
-    td.depgraph                       { text-align: center; padding: 0; white-space: nowrap; }
-
-    a.png:link, a.png:visited,
-    a.svg:link, a.svg:visited         { display: inline-block; text-decoration: none; padding: 2px 4px; margin-left: 1px; color: white; }
-    a.png              { background: #4c4; }
-    a.svg              { background: #4cc; }
-
     /* build status column */
     td.buildstatus                    { padding-top: 0; padding-bottom: 0; }
     td.buildstatus img                { vertical-align: middle; }
@@ -73,14 +47,6 @@
   <script type="text/javascript" src="/jquery/jquery.min.js"></script>
   <script type="text/javascript">
   $(function() {
-    $("#use-png").click(function(e) {
-        e.preventDefault();
-        $("#support-table").removeClass("prefer-svg").addClass("prefer-png");
-    });
-    $("#use-svg").click(function(e) {
-        e.preventDefault();
-        $("#support-table").removeClass("prefer-png").addClass("prefer-svg");
-    });
     // empty strings are for spacing (because I can't figure out how to achieve that effect with CSS)
     var known_versions = ['', '2.6', '2.7', '', '3.2', '3.3', '3.4', '', 'PyPy', ''];
     $.getJSON('data.json', function(data, textStatus, jqXHR) {
@@ -96,10 +62,6 @@
             '<col class="version-column" span="'+known_versions.length+'"></col>' +
           '</colgroup>' +
           '<colgroup>' +
-            '<col class="blockers"></col>' +
-            '<col class="blocks"></col>' +
-            '<col class="depgraph"></col>' +
-            '<col class="depgraph"></col>' +
             '<col class="buildstatus"></col>' +
           '</colgroup>' +
           '<thead>' +
@@ -109,10 +71,6 @@
               '<th class="package-version" rowspan="2">Version</th>' +
               '<th class="supports-py3" rowspan="2">Supports Python 3</th>' +
               '<th colspan="'+known_versions.length+'">Python Versions</th>' +
-              '<th class="blockers" rowspan="2" title="Direct dependencies that have not been ported to Python 3 yet">Blockers</th>' +
-              '<th class="blocks" rowspan="2" title="Packages that cannot be ported to Python 3 yet because they depend on this package">Blocks</th>' +
-              '<th class="depgraph" rowspan="2">Dep. Graph</th>' +
-              '<th class="depgraph" rowspan="2">(incl. extras)</th>' +
               '<th class="buildstatus" rowspan="2">Build status</th>' +
             '</tr>' +
             '<tr>' +
@@ -129,9 +87,6 @@
         data.sort(function(a, b) {
             var r = 0;
             if (r == 0) r = !!b.version - !!a.version;        // unreleased last
-            if (r == 0) r = b.supports_py3 - a.supports_py3;  // py3k-supporting first
-            if (r == 0) r = !!b.supports.length - !!a.supports.length;
-            if (r == 0) r = a.blockers.length - b.blockers.length;
             if (r == 0) r = (a.name < b.name ? -1 : 1); // assume a.name != b.name
             return r;
         });
@@ -146,6 +101,8 @@
                   .appendTo(row);
             // package vcs
             var uses_git = (pkg.github_web_url && (!pkg.svn_web_url || pkg.removed_from_svn));
+            if (!uses_git)
+                return;
             var primary_url = uses_git ? pkg.github_web_url : pkg.svn_web_url;
             td = $('<td>')
                   .addClass('vcs')
@@ -153,24 +110,6 @@
                                   .addClass(uses_git ? 'git' : 'svn')
                                   .text(uses_git ? 'Git' : 'SVN'))
                   .appendTo(row);
-            if (pkg.svn_web_url && pkg.svn_web_url != primary_url) {
-                var a = $('<a>').attr('href', pkg.svn_web_url)
-                                  .addClass('svn secondary')
-                                  .text('(SVN)');
-                if (pkg.removed_from_svn)
-                   a.text('(svn)')
-                    .attr('title', 'moved to Github');
-                td.append(a);
-            }
-            if (pkg.github_web_url && pkg.github_web_url != primary_url) {
-                var a = $('<a>').attr('href', pkg.github_web_url)
-                                  .addClass('git secondary')
-                                  .text('(Git)');
-                if (pkg.empty_github_repo)
-                   a.text('(git)')
-                    .attr('title', 'empty Github repository');
-                td.append(a);
-            }
             // package version
             td = $('<td>')
                   .addClass('version')
@@ -201,48 +140,6 @@
                     row.append('<td class="unsupported">-</td>');
                 }
             });
-            // blockers
-            var blockers = pkg.blockers || [];
-            td = $('<td>')
-                  .addClass('blockers')
-                  .text(blockers.length)
-                  .attr('title', blockers.join('\n'))
-                  .appendTo(row);
-            if (pkg.supports_py3 || !pkg.version)
-                td.addClass('blockers-na')
-            else if (blockers.length == 0)
-                td.addClass('no-blockers');
-            // blocks
-            var blocks = pkg.blocks || [];
-            td = $('<td>')
-                  .addClass('blocks')
-                  .text(blocks.length)
-                  .attr('title', blocks.join('\n'))
-                  .appendTo(row);
-            if (pkg.supports_py3 || !pkg.version)
-                td.addClass('blocks-na')
-            else if (blocks.length == 0)
-                td.addClass('blocks-nothing');
-            // dependency graph
-            td = $('<td>')
-                  .addClass('depgraph')
-                  .append($('<a>').attr('href', 'deps/' + pkg.name + '.png')
-                                  .addClass('png')
-                                  .text('PNG'))
-                  .append($('<a>').attr('href', 'deps/' + pkg.name + '.svg')
-                                  .addClass('svg')
-                                  .text('SVG'))
-                  .appendTo(row);
-            // dependency graph (with extras)
-            td = $('<td>')
-                  .addClass('depgraph')
-                  .append($('<a>').attr('href', 'deps-with-extras/' + pkg.name + '.png')
-                                  .addClass('png')
-                                  .text('PNG'))
-                  .append($('<a>').attr('href', 'deps-with-extras/' + pkg.name + '.svg')
-                                  .addClass('svg')
-                                  .text('SVG'))
-                  .appendTo(row);
             // build status
             td = $('<td>')
                   .addClass('buildstatus');
@@ -258,26 +155,12 @@
         });
         var lastModified = jqXHR.getResponseHeader("Last-Modified");
         $("#last-modified").text("Currently shown dataset was computed on " + lastModified + ".");
-        var count_released = count_py3 + count_nopy3;
-        var progress = $("#progress")
-              .attr('value', count_py3)
-              .attr('max', count_released)
-              .attr('title', count_py3 + ' out of ' + count_released + ' packages ported')
-              .text(count_py3 + ' out of ' + count_released + ' packages ported')
-              .attr('style', null);
     });
   });
   </script>
 </head>
 <body>
-  <h1>Unofficial Zope on Python 3 status page</h1>
-
-  <progress id="progress" style="display: none"></progress>
-
-  <div id="image-format-choice">
-    Do you prefer <a href="#" class="png" id="use-png">PNG</a> or
-    <a href="#" class="svg" id="use-svg">SVG</a>?
-  </div>
+  <h1>Travis CI build status for Zope Foundation packages</h1>
 
   <table id="support-table" class="prefer-svg">
     <tr>
@@ -285,12 +168,8 @@
     </tr>
   </table>
 
-  <div class="sidebar">
-    <a href="deps.svg" title="See the dependency graph"><img src="deps-thumb.png" alt="Dependency graph"></a>
-  </div>
-
-  <p>This page lists all projects from <a href="http://svn.zope.org">svn.zope.org</a>
-    and the new <a href="https://github.com/ZopeFoundation">GitHub
+  <p>This page lists all projects from
+    <a href="https://github.com/ZopeFoundation">GitHub
     ZopeFoundation organization</a>, and shows the latest version published on
     the <a href="http://pypi.python.org/pypi">Python Package Index</a> and the
     explicitly declared supported Python versions from trove classifiers for
@@ -299,11 +178,11 @@
   <p>The data are updated daily by a <a href="https://gist.github.com/4686862">cron script</a>.
     <span id="last-modified"></span></p>
 
-  <div class="footer"> 
-    Site maintained by <a href="http://pov.lt/">Programmers of Vilnius</a>.
-    This site uses <a href="http://validator.w3.org/check/referer">valid</a> HTML and CSS.<br /> 
-    If you experience any problems with the website, please contact <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#119;&#101;&#98;&#109;&#97;&#115;&#116;&#101;&#114;&#64;&#112;&#111;&#118;&#46;&#108;&#116;">&#119;&#101;&#98;&#109;&#97;&#115;&#116;&#101;&#114;&#64;&#112;&#111;&#118;&#46;&#108;&#116;</a>.
-  </div> 
+  <div class="footer">
+    Site maintained by <a href="http://pov.lt/">Programmers of Vilnius</a>
+    This site uses <a href="http://validator.w3.org/check/referer">valid</a> HTML and CSS.<br />
+    If you experience any problems with the website, please contact <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#119;&#101;&#98;&#109;&#97;&#115;&#116;&#101;&#114;&#64;&#112;&#111;&#118;&#46;&#108;&#116;">&#119;&#101;&#98;&#109;&#97;&#115;&#116;&#101;&#114;&#64;&#112;&#111;&#118;&#46;&#108;&#116;</a>
+  </div>
 
 </body>
 </html>
