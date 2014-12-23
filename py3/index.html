@@ -137,7 +137,16 @@
         });
         var pypi_url = 'https://pypi.python.org/pypi/';
         var count_py3 = 0, count_nopy3 = 0, count_unreleased = 0;
+        var filter = null;
+        $.each(location.search.slice(1).split(';'), function(idx, arg) {
+            arg = arg.split('=')
+            if (arg[0] == 'filter') {
+                filter = arg[1];
+            }
+        });
         $.each(data, function(idx, pkg) {
+            if (filter && pkg.name.slice(0, filter.length) != filter)
+                return;
             var row = $('<tr>'), td;
             // package name
             td = $('<td>')
