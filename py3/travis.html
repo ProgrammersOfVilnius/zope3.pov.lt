@@ -5,6 +5,8 @@
   <title>Travis CI for zope.*</title>
   <link rel="stylesheet" href="/style.css" />
   <style type="text/css">
+    .filterbox         { position: absolute; top: 0; right: 0; padding: 1em; }
+
     #support-table     { margin-left: -6em; }
     #support-table     { margin-bottom: 2em; table-layout: fixed; }
     #support-table     { border-spacing: 1px; }
@@ -49,6 +51,14 @@
   $(function() {
     // empty strings are for spacing (because I can't figure out how to achieve that effect with CSS)
     var known_versions = ['', '2.6', '2.7', '', '3.2', '3.3', '3.4', '', 'PyPy', ''];
+    var filter = null;
+    $.each(location.search.slice(1).split(';'), function(idx, arg) {
+        arg = arg.split('=')
+        if (arg[0] == 'filter') {
+            filter = arg[1];
+            $("#filter").val(filter);
+        }
+    });
     $.getJSON('data.json', function(data, textStatus, jqXHR) {
         var tbl = $('#support-table');
         tbl.html(
@@ -91,13 +101,6 @@
             return r;
         });
         var pypi_url = 'https://pypi.python.org/pypi/';
-        var filter = null;
-        $.each(location.search.slice(1).split(';'), function(idx, arg) {
-            arg = arg.split('=')
-            if (arg[0] == 'filter') {
-                filter = arg[1];
-            }
-        });
         $.each(data, function(idx, pkg) {
             if (filter && pkg.name.slice(0, filter.length) != filter)
                 return;
@@ -166,6 +169,12 @@
 </head>
 <body>
   <h1>Travis CI build status for Zope Foundation packages</h1>
+
+  <div class="filterbox">
+    <form>
+      <input id="filter" name="filter" type="text" placeholder="prefix filter">
+    </form>
+  </div>
 
   <table id="support-table" class="prefer-svg">
     <tr>
