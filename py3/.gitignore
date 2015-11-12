@@ -1,0 +1,12 @@
+.cache/
+data.json
+deps
+deps-thumb.png
+deps-with-extras
+deps.dot
+deps.json
+deps.png
+deps.svg
+move-status.json
+packages.json
+status.json
