@@ -100,7 +100,7 @@
             if (r == 0) r = (a.name < b.name ? -1 : 1); // assume a.name != b.name
             return r;
         });
-        var pypi_url = 'https://pypi.python.org/pypi/';
+        var pypi_url = 'https://pypi.org/p/';
         $.each(data, function(idx, pkg) {
             if (filter && pkg.name.slice(0, filter.length) != filter)
                 return;
@@ -185,7 +185,7 @@
   <p>This page lists all projects from
     <a href="https://github.com/ZopeFoundation">GitHub
     ZopeFoundation organization</a>, and shows the latest version published on
-    the <a href="http://pypi.python.org/pypi">Python Package Index</a> and the
+    the <a href="https://pypi.org/">Python Package Index</a> and the
     explicitly declared supported Python versions from trove classifiers for
     that version.</p>
 

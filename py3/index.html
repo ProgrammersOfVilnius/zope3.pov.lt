@@ -135,7 +135,7 @@
             if (r == 0) r = (a.name < b.name ? -1 : 1); // assume a.name != b.name
             return r;
         });
-        var pypi_url = 'https://pypi.python.org/pypi/';
+        var pypi_url = 'https://pypi.org/p/';
         var count_py3 = 0, count_nopy3 = 0, count_unreleased = 0;
         var filter = null;
         $.each(location.search.slice(1).split(';'), function(idx, arg) {
@@ -301,7 +301,7 @@
   <p>This page lists all projects from <a href="http://svn.zope.org">svn.zope.org</a>
     and the new <a href="https://github.com/ZopeFoundation">GitHub
     ZopeFoundation organization</a>, and shows the latest version published on
-    the <a href="http://pypi.python.org/pypi">Python Package Index</a> and the
+    the <a href="https://pypi.org/">Python Package Index</a> and the
     explicitly declared supported Python versions from trove classifiers for
     that version.</p>
 
