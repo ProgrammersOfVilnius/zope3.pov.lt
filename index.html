@@ -20,45 +20,6 @@
       color: #666;
     }
   </style>
-  <!--
-  <script type="text/javascript" src="jquery/jquery.min.js"></script>
-  <script type="text/javascript">
-    $(function() {
-        $.get('/buildbot/one_box_per_builder', function(data) {
-            var boxes = $(data).find('.LastBuild.box');
-            var status = {};
-            boxes.filter('.success').prev('td').children('a').map(function(){status[$(this).text()] = true;});
-            boxes.filter('.failure').prev('td').children('a').map(function(){status[$(this).text()] = false;});
-            var status_text = {};
-            var build_number = {};
-            boxes.map(function(){
-                var name = $(this).prev('td').children('a').text();
-                status_text[name] = $(this).html().split('<br>').slice(1).join(' ');
-                build_number[name] = $(this).children('a').attr('href').split('/')[3];
-            });
-            $.each(status, function(name, ok) {
-                $(document.getElementById(name)).addClass(ok ? "success" : "failure");
-                $(document.getElementById(name + '-status')).html(status_text[name] + '<br>');
-                var build = build_number[name];
-                var words = status_text[name].split(' ');
-                var step = (words[0] == 'failed' ? words[1] : 'test');
-                var build_url = 'http://zope3.pov.lt/buildbot/builders/' + name + '/builds/' + build;
-                var step_url = build_url + '/steps/' + step;
-                if (step == 'failed') { // "failed failed slave lost"
-                    $(document.getElementById(name + '-summary')).attr('href', build_url).text('all steps');
-                    $(document.getElementById(name + '-log')).hide().prev('.sep').hide();
-                } else if (step != 'test') {
-                    $(document.getElementById(name + '-summary')).attr('href', build_url).text('all steps');
-                    $(document.getElementById(name + '-log')).attr('href', step_url + '/logs/stdio').text(step + ' log');
-                } else {
-                    $(document.getElementById(name + '-summary')).attr('href', step_url + '/logs/summary');
-                    $(document.getElementById(name + '-log')).attr('href', step_url + '/logs/stdio');
-                }
-            });
-        });
-    });
-  </script>
-  -->
 </head>
 <body>
   <h1>Zope 3 related odds and ends</h1>
@@ -69,51 +30,10 @@
   <p><a href="trac/">Source repository browser of svn.zope.org</a> (snapshot up to revision 130530)</p>
   <p><a href="py3/">Python 3 porting status page</a> (updated daily)</p>
   <p><a href="py3/travis.html">Travis CI summary for ZopeFoundation packages</a></p>
-  <!--
-  <p><a href="buildbot/"><del>Buildbot for the Zope 3.4 Known Good Set packages</del></a> (no longer online)</p>
-  <table class="buildbot-status">
-    <tr>
-      <th>&nbsp;</th>
-      <th title="Ubuntu 8.04 LTS (Hardy Heron)">32-bit Linux</th>
-      <th title="the buildslave machine died"><del>32-bit Linux</del></th>
-      <th title="Ubuntu 10.04 LTS (Lucid Lynx)">64-bit Linux</th>
-    </tr>
-    <tr>
-      <th>Python 2.4</th>
-      <td id="py2.4-32bit-linux">
-        <span id="py2.4-32bit-linux-status"></span>
-        <a id="py2.4-32bit-linux-summary" href="http://zope3.pov.lt/buildbot/builders/py2.4-32bit-linux/builds/-1/steps/test/logs/summary">summary</a>
-        <span class="sep">/</span>
-        <a id="py2.4-32bit-linux-log" href="http://zope3.pov.lt/buildbot/builders/py2.4-32bit-linux/builds/-1/steps/test/logs/stdio">full log</a>
-      </td>
-      <td id="py2.4-64bit-linux">
-        <span id="py2.4-64bit-linux-status"></span>
-        <a id="py2.4-64bit-linux-summary" href="http://zope3.pov.lt/buildbot/builders/py2.4-64bit-linux/builds/-1/steps/test/logs/summary">summary</a>
-        <span class="sep">/</span>
-        <a id="py2.4-64bit-linux-log" href="http://zope3.pov.lt/buildbot/builders/py2.4-64bit-linux/builds/-1/steps/test/logs/stdio">full log</a>
-      </td>
-    </tr>
-    <tr>
-      <th>Python 2.5</th>
-      <td id="py2.5-32bit-linux">
-        <span id="py2.5-32bit-linux-status"></span>
-        <a id="py2.5-32bit-linux-summary" href="http://zope3.pov.lt/buildbot/builders/py2.5-32bit-linux/builds/-1/steps/test/logs/summary">summary</a>
-        <span class="sep">/</span>
-        <a id="py2.5-32bit-linux-log" href="http://zope3.pov.lt/buildbot/builders/py2.5-32bit-linux/builds/-1/steps/test/logs/stdio">full log</a>
-      </td>
-      <td id="py2.5-64bit-linux">
-        <span id="py2.5-64bit-linux-status"></span>
-        <a id="py2.5-64bit-linux-summary" href="http://zope3.pov.lt/buildbot/builders/py2.5-64bit-linux/builds/-1/steps/test/logs/summary">summary</a>
-        <span class="sep">/</span>
-        <a id="py2.5-64bit-linux-log" href="http://zope3.pov.lt/buildbot/builders/py2.5-64bit-linux/builds/-1/steps/test/logs/stdio">full log</a>
-      </td>
-    </tr>
-  </table>
-  -->
 
   <div class="footer"> 
-    Site maintained by <a href="http://pov.lt/">Programmers of Vilnius</a>.
-    This site uses <a href="http://validator.w3.org/check/referer">valid</a> HTML and CSS.<br /> 
+    Site maintained by <a href="https://pov.lt/">Programmers of Vilnius</a>.
+    This site uses <a href="https://validator.w3.org/check/referer">valid</a> HTML and CSS.<br /> 
     If you experience any problems with the website, please contact <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#119;&#101;&#98;&#109;&#97;&#115;&#116;&#101;&#114;&#64;&#112;&#111;&#118;&#46;&#108;&#116;">&#119;&#101;&#98;&#109;&#97;&#115;&#116;&#101;&#114;&#64;&#112;&#111;&#118;&#46;&#108;&#116;</a>.
   </div> 
 
