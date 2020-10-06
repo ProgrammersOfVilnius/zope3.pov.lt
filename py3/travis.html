@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <title>Travis CI for zope.*</title>
   <link rel="stylesheet" href="/style.css" />
-  <style type="text/css">
+  <style>
     .filterbox         { position: absolute; top: 0; right: 0; padding: 1em; }
 
     #support-table     { margin-left: -6em; }
@@ -46,8 +46,8 @@
       margin-left: 2em;
     }
   </style>
-  <script type="text/javascript" src="/jquery/jquery.min.js"></script>
-  <script type="text/javascript">
+  <script src="/jquery/jquery.min.js"></script>
+  <script>
   $(function() {
     // empty strings are for spacing (because I can't figure out how to achieve that effect with CSS)
     var known_versions = ['', '2.7', '', '3.5', '3.6', '3.7', '3.8', '3.9', '', 'PyPy', ''];
