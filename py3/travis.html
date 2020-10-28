@@ -153,7 +153,7 @@
                   .addClass('buildstatus');
             if (pkg.github_web_url && !pkg.empty_github_repo &&
                 pkg.github_web_url.slice(0, 19) == "https://github.com/") {
-                var travis_url = 'https://travis-ci.org/' + pkg.github_web_url.slice(19);
+                var travis_url = 'https://travis-ci.com/' + pkg.github_web_url.slice(19);
                 td.append($('<a>').attr('href', travis_url)
                                   .append($('<img>').attr('src', travis_url + '.png?branch=master')));
             }
