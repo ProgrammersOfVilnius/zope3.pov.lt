@@ -257,9 +257,11 @@
                   .addClass('buildstatus');
             if (pkg.github_web_url && !pkg.empty_github_repo &&
                 pkg.github_web_url.slice(0, 19) == "https://github.com/") {
-                var travis_url = 'https://travis-ci.com/' + pkg.github_web_url.slice(19);
-                td.append($('<a>').attr('href', travis_url)
-                                  .append($('<img>').attr('src', travis_url + '.png?branch=master')));
+                var workflow_name = 'tests';
+                var badge_url = pkg.github_web_url + '/workflows/' + workflow_name + '/badge.svg';
+                var link_url = pkg.github_web_url + '/actions?query=workflow%3A%22' + workflow_name + '%22';
+                td.append($('<a>').attr('href', link_url)
+                                  .append($('<img>').attr('src', badge_url)));
             }
             td.appendTo(row);
             // that's it for this row
