@@ -82,7 +82,16 @@
         $("#support-table").removeClass("prefer-png").addClass("prefer-svg");
     });
     // empty strings are for spacing (because I can't figure out how to achieve that effect with CSS)
-    var known_versions = ['', '2.7', '', '3.5', '3.6', '3.7', '3.8', '3.9', '', 'PyPy', ''];
+    var known_versions = [
+      '',
+      '2.7',
+      '',
+    //'3.5', '3.6', '3.7', '3.8', '3.9',
+      '3.10', '3.11', '3.12', '3.13', '3.14',
+      '',
+      'PyPy',
+      '',
+    ];
     $.getJSON('data.json', function(data, textStatus, jqXHR) {
         var tbl = $('#support-table');
         tbl.html(
